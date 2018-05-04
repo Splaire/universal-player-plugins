@@ -6,13 +6,18 @@ function setScreen(displayIdx, displays) {
     return chosenDisplay
 }
 
-module.exports = function MultipleDisplaysPlugin (api) {
+module.exports = function MultipleDisplaysPlugin(api) {
     const setBounds = (display) => {
         api.electron.remote.getCurrentWindow().setBounds(display.bounds)
     }
 
     const displays = api.electron.screen.getAllDisplays()
     if (displays.length <= 1) { return }
+
+    api.electron.remote.globalShortcut.register('CmdOrCtrl+Shift+L', () => {
+        localStorage.removeItem(LOCALSTORAGE_KEY)
+        api.electron.remote.app.quit()
+    })
 
     const selectedScreen = localStorage.getItem(LOCALSTORAGE_KEY) || ''
     const display = displays.find(d => d.id.toString() === selectedScreen.toString())
